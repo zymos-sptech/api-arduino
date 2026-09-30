@@ -20,9 +20,9 @@ const serial = async (
     let poolBancoDados = mysql.createPool(
         {
             host: 'localhost',
-            user: 'sensor',
-            password: 'SPTECH@123senha',
-            database: 'zymosTeste',
+            user: 'user_zymos',
+            password: 'zymos123!',
+            database: 'zymos',
             port: 3306
         }
     ).promise();
@@ -50,10 +50,9 @@ const serial = async (
     // processa os dados recebidos do Arduino
     arduino.pipe(new serialport.ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
         console.log(data);
-        //const valores = data.split(';');
-        //const sensorDigital = parseInt(valores[0]);
-        //const temperaturaAnalog = parseFloat(valores[1]);
-        const temperaturaAnalog = parseFloat(data);
+        const valores = data.split(';');
+        const idSensor = parseInt(valores[0]);
+        const temperaturaAnalog = parseFloat(valores[1]);
 
         // armazena os valores dos sensores nos arrays correspondentes
         valorestemperaturaAnalog.push(temperaturaAnalog);
@@ -64,10 +63,10 @@ const serial = async (
 
             // este insert irá inserir os dados na tabela "medida"
             await poolBancoDados.execute(
-                'INSERT INTO dadosTemp (temperatura) VALUES (?)',
-                [temperaturaAnalog]
+                'INSERT INTO leitura_sensor (temperatura, fk_sensor) VALUES (?, ?)',
+                [temperaturaAnalog, idSensor] 
             );
-            console.log("valores inseridos no banco: ", temperaturaAnalog);
+            console.log("valores inseridos no banco: ", temperaturaAnalog, idSensor);
 
         }
 
