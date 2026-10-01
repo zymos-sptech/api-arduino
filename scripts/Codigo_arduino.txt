@@ -1,17 +1,20 @@
 const int PINO_SENSOR_TEMPERATURA = A0;
+const int ID_SENSOR = 1;
+
 float temperaturaCelsius;
 
-void setup () {
+void setup() {
   Serial.begin(9600);
 }
 
 void loop() {
+
   int valorLeitura = analogRead(PINO_SENSOR_TEMPERATURA);
   temperaturaCelsius = (valorLeitura * 5.0 / 1023.0) / 0.01;
 
-  //Serial.print("Temperatura: ");
+  Serial.print(ID_SENSOR);
+  Serial.print(";");
   Serial.println(temperaturaCelsius);
-  //Serial.print(" C");
 
   delay(2000);
 }
