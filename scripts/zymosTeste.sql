@@ -100,6 +100,7 @@ CREATE TABLE cerveja (
 );
 
 -- Tabela de Tanques
+-- Inverter as fk, colocar a fk_lote aqui e tirar o fk_tanque da tabela lote
 CREATE TABLE tanque (
     id_tanque INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
@@ -116,6 +117,7 @@ CREATE TABLE tanque (
 CREATE TABLE sensor (
     id_sensor INT PRIMARY KEY AUTO_INCREMENT,
     fk_tanque INT NOT NULL,
+    id_arduino INT NOT NULL, -- fazer a implementação aqui
     modelo VARCHAR(20) NOT NULL DEFAULT 'LM35',
     status_sensor VARCHAR(10) NOT NULL DEFAULT 'Ativo',
     data_instalacao DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -149,12 +151,12 @@ CREATE TABLE lote (
 CREATE TABLE leitura_sensor (
     id_leitura INT PRIMARY KEY AUTO_INCREMENT,
     fk_sensor INT NOT NULL,
-    fk_lote INT NOT NULL,
     temperatura DECIMAL(3,1) NOT NULL,
     data_hora DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_leitura_sensor FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor),
-    CONSTRAINT fk_leitura_lote FOREIGN KEY (fk_lote) REFERENCES lote(id_lote)
+    CONSTRAINT fk_leitura_sensor FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor)
 );
+
+select l.*, s.* from leitura_sensor l join sensor s on l.fk_sensor = s.id_sensor; 
 
 -- Tabela de Alertas de Temperatura
 CREATE TABLE alerta (
