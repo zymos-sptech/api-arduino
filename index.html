@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <h1>Graphics</h1>
+    <h1>Temperatura em tempo real</h1>
     <div style="display: flex">
       <div style="width: 50%">
         <canvas id="sensorAnalogico"></canvas>
@@ -26,29 +26,43 @@
                 label: "Temperatura real",
                 data: [],
                 fill: false,
+                pointStyle: true,
                 borderColor: "#1F3F55",
+                backgroundColor: "#1F3F55",
                 tension: 0.1,
               },
               {
                 type: "line",
                 label: "Faixa ideal",
                 data: [],
-                borderColor: "rgba(255, 99, 132, 1)", // Cor da linha vermelha
-                backgroundColor: "rgba(255, 99, 132, 0.3)", // Cor do preenchimento com transparência
-                borderWidth: 2,
-                fill: "+1", // TRANSFORMA EM GRÁFICO DE ÁREA
+                backgroundColor: "#E7EEE3",
+                pointStyle: false,
+                borderWidth: 0,
+                fill: 2,
                 tension: 0.4,
               },
               {
                 type: "line",
                 data: [],
-                borderColor: "rgba(255, 99, 132, 1)", // Cor da linha vermelha
-                backgroundColor: "rgba(255, 99, 132, 0.3)", // Cor do preenchimento com transparência
-                borderWidth: 2,
-                fill: false, // TRANSFORMA EM GRÁFICO DE ÁREA
-                tension: 0.4,
+                borderWidth: 0,
+                pointStyle: false,
+                fill: false,
               },
             ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  filter: (item) => Boolean(item.text),
+                },
+              },
+            },
           },
         },
       );
