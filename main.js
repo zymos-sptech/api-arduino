@@ -8,11 +8,15 @@ const SERIAL_BAUD_RATE = 9600;
 const SERVIDOR_PORTA = 3300;
 
 // habilita ou desabilita a inserção de dados no banco de dados
-const HABILITAR_OPERACAO_INSERIR = true;
+const HABILITAR_OPERACAO_INSERIR = false;
 const HABILITAR_DADOS_SIMULADOS = true;
 
 // função para comunicação serial
-const serial = async (valorestemperaturaAnalog) => {
+const serial = async (
+  valorestemperaturaAnalog,
+  faixaIdealMin,
+  faixaIdealMax,
+) => {
   // conexão com o banco de dados MySQL
   const poolBancoDados = mysql
     .createPool({
@@ -26,41 +30,43 @@ const serial = async (valorestemperaturaAnalog) => {
 
   // Ids dos lotes
   const idLote01 = 106;
-  const idLote02 = 107;
-  const idLote03 = 108;
 
   // ids dos sensores
   const sensor01 = 4;
-  const sensor02 = 5;
-  const sensor03 = 6;
 
   // temperaturas dos lotes
   let tempLote01 = 0;
-  let tempLote02 = 0;
-  let tempLote03 = 0;
 
   const dadosSimulados = async (data) => {
     tempLote01 = parseFloat(data) + 3;
-    tempLote02 = parseFloat(data) - 5;
-    tempLote03 = parseFloat(data) + 6;
 
-    console.log(`\n\nLOTE | TEMPERATURA`);
-    console.log(`LOTE01 | ${tempLote01.toFixed(2)}`);
-    console.log(`LOTE02 | ${tempLote02.toFixed(2)}`);
-    console.log(`LOTE03 | ${tempLote03.toFixed(2)}`);
+    let getFaixaIdealLote01 = await getFaixaIdeal(idLote01);
+    let tempMinLote01 = getFaixaIdealLote01[0].temperatura_min;
+    let tempMaxLote01 = getFaixaIdealLote01[0].temperatura_max;
+
+    await valorestemperaturaAnalog.push({
+      temperatura: tempLote01.toFixed(2),
+      faixaIdealMin: tempMinLote01,
+      faixaIdealMax: tempMaxLote01,
+    });
+
+    await faixaIdealMin.push(tempMinLote01);
+    await faixaIdealMax.push(tempMaxLote01);
+
+    console.log(`\n\nLOTE | TEMPERATURA | FAixa ideal`);
+    console.log(
+      `LOTE01 | ${tempLote01.toFixed(2)} | ${tempMinLote01} | ${tempMaxLote01}`,
+    );
 
     if (HABILITAR_OPERACAO_INSERIR) {
       // Envia os dados para o banco de dados
-      console.log(`temp antes de chamar a func ${tempLote01}`);
       await enviarDadosBd(sensor01, idLote01, tempLote01.toFixed(2));
-      await enviarDadosBd(sensor02, idLote02, tempLote02.toFixed(2));
-      await enviarDadosBd(sensor03, idLote03, tempLote03.toFixed(2));
     }
   };
 
   if (HABILITAR_DADOS_SIMULADOS) {
     console.log(
-      "*** MODO SIMULADO: os dados são falsos, o Arduino NÃO está sendo lido ***"
+      "*** MODO SIMULADO: os dados são falsos, o Arduino NÃO está sendo lido ***",
     );
 
     setInterval(() => {
@@ -73,7 +79,7 @@ const serial = async (valorestemperaturaAnalog) => {
     // lista as portas seriais disponíveis e procura pelo Arduino
     const portas = await serialport.SerialPort.list();
     const portaArduino = portas.find(
-      (porta) => porta.vendorId == 2341 && porta.productId == 43
+      (porta) => porta.vendorId == 2341 && porta.productId == 43,
     );
     if (!portaArduino) {
       throw new Error("O arduino não foi encontrado em nenhuma porta serial");
@@ -88,7 +94,7 @@ const serial = async (valorestemperaturaAnalog) => {
     // evento quando a porta serial é aberta
     arduino.on("open", () => {
       console.log(
-        `A leitura do arduino foi iniciada na porta ${portaArduino.path} utilizando Baud Rate de ${SERIAL_BAUD_RATE}`
+        `A leitura do arduino foi iniciada na porta ${portaArduino.path} utilizando Baud Rate de ${SERIAL_BAUD_RATE}`,
       );
     });
 
@@ -101,7 +107,6 @@ const serial = async (valorestemperaturaAnalog) => {
 
         // armazena os valores dos sensores nos arrays correspondentes
         valorestemperaturaAnalog.push(temperaturaAnalog);
-        // valoresSensorDigital.push(sensorDigital);
 
         // insere os dados no banco de dados (se habilitado)
         if (HABILITAR_OPERACAO_INSERIR) {
@@ -116,24 +121,25 @@ const serial = async (valorestemperaturaAnalog) => {
   }
 
   async function enviarDadosBd(fk_sensor, fk_lote, temperatura) {
-    console.log("Valores recebidos: ", temperatura, fk_sensor, fk_lote);
     // este insert irá inserir os dados na tabela "medida"
     const [response] = await poolBancoDados.execute(
       "INSERT INTO leitura_sensor (temperatura, fk_sensor, fk_lote) VALUES (?, ?, ?)",
-      [temperatura, fk_sensor, fk_lote]
+      [temperatura, fk_sensor, fk_lote],
     );
+    return response;
+  }
 
-    console.log("valores inseridos no banco: ", temperatura, fk_sensor, fk_lote);
-
+  async function getFaixaIdeal(id_lote) {
+    const [response] = await poolBancoDados.execute(
+      "SELECT c.temperatura_min, c.temperatura_max FROM lote l JOIN cerveja c ON l.fk_cerveja = c.id_cerveja WHERE id_lote = ?",
+      [id_lote],
+    );
     return response;
   }
 };
 
 // função para criar e configurar o servidor web
-const servidor = (
-  valorestemperaturaAnalog
-  //valoresSensorDigital
-) => {
+const servidor = (valorestemperaturaAnalog, faixaIdealMin, faixaIdealMax) => {
   const app = express();
 
   // configurações de requisição e resposta
@@ -141,7 +147,7 @@ const servidor = (
     response.header("Access-Control-Allow-Origin", "*");
     response.header(
       "Access-Control-Allow-Headers",
-      "Origin, Content-Type, Accept"
+      "Origin, Content-Type, Accept",
     );
     next();
   });
@@ -161,14 +167,12 @@ const servidor = (
 (async () => {
   // arrays para armazenar os valores dos sensores
   const valorestemperaturaAnalog = [];
+  const faixaIdealMin = [];
+  const faixaIdealMax = [];
 
   // inicia a comunicação serial
-  await serial(
-    valorestemperaturaAnalog
-  );
+  await serial(valorestemperaturaAnalog, faixaIdealMin, faixaIdealMax);
 
   // inicia o servidor web
-  servidor(
-    valorestemperaturaAnalog
-  );
+  servidor(valorestemperaturaAnalog, faixaIdealMin, faixaIdealMax);
 })();

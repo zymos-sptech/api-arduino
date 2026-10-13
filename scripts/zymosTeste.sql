@@ -338,15 +338,16 @@ INSERT INTO tanque (fk_unidade, fk_status_tanque, identificador_tanque, capacida
 (1, 2, 'Tanque TQ-02', 10000),
 (1, 1, 'Tanque TQ-03', 10000);
 
+select * from leitura_sensor;
 -- Sensores (1 por tanque)
-INSERT INTO sensor (fk_tanque) VALUES (1), (2), (3);
+INSERT INTO sensor (fk_tanque) VALUES (4), (5), (6);
 
 -- Lotes: uma brassagem grande de IPA dividida em 2 tanques (mesmo codigo_producao),
 -- e um lote avulso de Pilsen no TQ-03
 INSERT INTO lote (codigo_lote, fk_tanque, fk_cerveja, fk_usuario_criador, fk_status_lote, data_inicio) VALUES
-('LOTE-2026-101-A', 1, 1, 2, 1, '2026-09-20 08:00:00'),
-('LOTE-2026-101-B', 2, 1, 2, 1, '2026-09-20 08:00:00'),
-('LOTE-2026-095', 3, 2, 2, 1, '2026-09-25 09:00:00');
+('LOTE-2026-101-A', 4, 1, 2, 1, '2026-09-20 08:00:00'),
+('LOTE-2026-101-B', 5, 1, 2, 1, '2026-09-20 08:00:00'),
+('LOTE-2026-095', 6, 2, 2, 1, '2026-09-25 09:00:00');
 
 -- Leituras de exemplo (poucas linhas, só pra ilustrar os SELECTs abaixo;
 -- na produção real chegariam a cada 2 segundos via Arduino/API)
