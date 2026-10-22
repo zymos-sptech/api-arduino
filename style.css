@@ -1,0 +1,182 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@100..900&display=swap");
+
+:root {
+  /* Tons Quentes / Acento / Alerta */
+  --color-accent: #d0a06f;
+  --color-accent-brown: #50453b;
+  --color-eyebrow-warm: #7d562c;
+  --color-accent-amber: #f0bd8a;
+  --color-alert-red: #c05230;
+  --color-alert-terracotta: #bd5934;
+  --color-alert-border: #e7ab95;
+  --color-alert-light: #fdf3ef;
+  --color-badge-desvio: #c57b56;
+
+  /* Tons de Verde */
+  --color-green-dark: #5a6b5e;
+  --color-green-forest: #4e5f52;
+  --color-green-light: #e8efe6;
+  --color-green-sage-light: #d1dbd1;
+  --color-green-sage-dark: #4a5a4f;
+
+  /* Tons de Azul */
+  --color-blue-dark: #426084;
+  --color-blue-navy: #1a3346;
+  --color-blue-petroleum: #233e54;
+  --color-blue-active: #2b495d;
+  --color-blue-muted: #556c80;
+  --color-blue-medium: #d1e4ff;
+  --color-blue-light: #e3f0ff;
+
+  --color-gray-dark: #718092;
+
+  /* Tons Neutros / Fundo */
+  --color-neutral-base: #fffaef;
+  --color-neutral-light: #f6fbf3;
+  --color-neutral-gray: #d8ddd6;
+  --color-bg-sage-light: #f0f5ee;
+  --color-neutral-sand: #f5ede1;
+  --color-neutral-warm: #faf6ee;
+  --color-neutral-hover: #faf7f2;
+  --color-neutral-border: #ece5da;
+  --color-neutral-border-light: #efe8dd;
+  --color-text-muted: #8c8275;
+  --white: #fff;
+
+  --color-orange-dark: #b8622c;
+  --color-orange-light: #fbf2ea;
+
+  /* Cores Adicionais do Dashboard */
+  --color-track-dark: #201d1d;
+  --color-border-warm: #e2dbce;
+  --color-accent-soft: #fdfaf7;
+  --color-blue-slate: #4f6070;
+  --color-filter-pill-border: rgba(226, 232, 240, 0.7);
+  --color-filter-pill-bg: rgba(226, 232, 240, 0.6);
+  --color-gray-light: #eeeeee;
+  --color-table-header: #f4f3ef;
+  --color-text-light: #fcfaf6;
+
+  /* Tipografia */
+  --font-primary: "Outfit", sans-serif;
+  --font-titulo: "Epilogue", sans-serif;
+
+  /* Espaçamento */
+  --horizontal-margin: 5%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--color-neutral-base);
+  color: var(--color-blue-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container-grafico {
+  width: 100%;
+  display: flex;
+  padding: 1.5rem 1.75rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.25rem;
+
+  border-radius: 1rem;
+  border: 0.0625rem solid var(--color-neutral-gray);
+  background: var(--white);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  margin: 0;
+}
+
+.temp-real-container-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.temp-real-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.temp-real-container-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.temp-real-titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-blue-dark);
+}
+
+.temp-real-badge-aovivo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  color: var(--color-orange-dark);
+  background-color: var(--color-orange-light);
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+}
+
+.temp-real-badge-aovivo-circulo {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--color-orange-dark);
+}
+
+.temp-real-descricao {
+  font-size: 0.875rem;
+  color: var(--color-gray-dark);
+}
+
+.temp-real-legenda {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--color-gray-dark);
+}
+
+.temp-real-legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.temp-real-legenda-linha {
+  width: 1rem;
+  height: 0.2rem;
+  background-color: var(--color-blue-dark);
+  border-radius: 2px;
+}
+
+.temp-real-legenda-faixa {
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--color-green-light);
+  border-radius: 2px;
+}
+
+.temp-real-grafico-wrapper {
+  width: 100%;
+  height: 14rem;
+  position: relative;
+  display: flex;
+}

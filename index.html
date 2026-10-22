@@ -3,12 +3,40 @@
   <head>
     <title>Graphics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./style.css" />
   </head>
 
   <body>
-    <h1>Temperatura em tempo real</h1>
-    <div style="display: flex">
-      <div style="width: 50%">
+    <div class="container-grafico">
+      <div class="temp-real-container-header">
+        <div class="temp-real-header-top">
+          <div class="temp-real-container-row">
+            <h1 class="temp-real-titulo">
+              Temperatura real × Faixa ideal — Lote 101-A (IPA)
+            </h1>
+            <div class="temp-real-badge-aovivo">
+              <span class="temp-real-badge-aovivo-circulo"></span>Ao vivo
+            </div>
+          </div>
+
+          <div class="temp-real-legenda">
+            <span class="temp-real-legenda-item">
+              <span class="temp-real-legenda-linha"></span>Temperatura real
+            </span>
+
+            <span class="temp-real-legenda-item">
+              <span class="temp-real-legenda-faixa"></span>Faixa ideal 15–24°C
+            </span>
+          </div>
+        </div>
+
+        <p class="temp-real-descricao">
+          Leitura a cada 2 segundos · janela dos últimos 20 segundos (tanque
+          TQ-01)
+        </p>
+      </div>
+
+      <div class="temp-real-grafico-wrapper">
         <canvas id="sensorAnalogico"></canvas>
       </div>
     </div>
@@ -25,43 +53,46 @@
                 type: "line",
                 label: "Temperatura real",
                 data: [],
+                borderColor: "#426084",
+                borderWidth: 2,
+                pointBackgroundColor: "#426084",
+                pointBorderColor: "#426084",
+                pointRadius: 4,
                 fill: false,
-                pointStyle: true,
-                borderColor: "#1F3F55",
-                backgroundColor: "#1F3F55",
                 tension: 0.1,
               },
               {
                 type: "line",
                 label: "Faixa ideal",
                 data: [],
-                backgroundColor: "#E7EEE3",
-                pointStyle: false,
+                backgroundColor: "#e8efe6",
                 borderWidth: 0,
-                fill: 2,
-                tension: 0.4,
+                pointRadius: 0,
+                fill: "+1",
               },
               {
                 type: "line",
                 data: [],
                 borderWidth: 0,
-                pointStyle: false,
+                pointRadius: 0,
                 fill: false,
               },
             ],
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: { top: 25, right: 20 },
+            },
             scales: {
               y: {
-                beginAtZero: true,
+                min: 12,
+                max: 28,
               },
             },
             plugins: {
-              legend: {
-                labels: {
-                  filter: (item) => Boolean(item.text),
-                },
-              },
+              legend: { display: false },
             },
           },
         },
