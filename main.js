@@ -15,7 +15,7 @@ const serial = async (valorestemperaturaAnalog) => {
   // conexão com o banco de dados MySQL
   const poolBancoDados = mysql
     .createPool({
-      host: "10.18.32.61",
+      host: "localhost",
       user: "user_insert_zymos",
       password: "Zymos123!",
       database: "zymos",
@@ -26,10 +26,10 @@ const serial = async (valorestemperaturaAnalog) => {
   // Ids dos lotes
   const idLote01 = 100;
 
-  // ids dos sensores
+  // id do sensore
   const sensor01 = 1;
 
-  // temperaturas dos lotes
+  // temperatura do lote
   let tempLote01 = 0;
 
   // lista as portas seriais disponíveis e procura pelo Arduino
@@ -97,11 +97,11 @@ const serial = async (valorestemperaturaAnalog) => {
   arduino.on("error", (mensagem) => {
     console.error(`Erro no Arduino (Mensagem: ${mensagem})`);
   });
-  async function enviarDadosBd(fk_sensor, fk_lote, temperatura) {
-    // este insert irá inserir os dados na tabela "medida"
+  async function enviarDadosBd(fk_sensor, temperatura) {
+    // este insert irá inserir os dados na tabela "leitura_sensor"
     const [response] = await poolBancoDados.execute(
-      "INSERT INTO leitura_sensor (temperatura, fk_sensor, fk_lote) VALUES (?, ?, ?)",
-      [temperatura, fk_sensor, fk_lote],
+      "INSERT INTO leitura_sensor (temperatura, fk_sensor) VALUES (?, ?)",
+      [temperatura, fk_sensor],
     );
     return response;
   }
