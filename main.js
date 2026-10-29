@@ -72,8 +72,8 @@ const serial = async (valorestemperaturaAnalog) => {
       tempLote01 = tempConvertida;
 
       const getFaixaIdealLote01 = await getFaixaIdeal(idLote01);
-      const tempMinLote01 = getFaixaIdealLote01[0]?.temperatura_min ?? 0;
-      const tempMaxLote01 = getFaixaIdealLote01[0]?.temperatura_max ?? 0;
+      const tempMinLote01 = getFaixaIdealLote01[0]?.temperatura_min;
+      const tempMaxLote01 = getFaixaIdealLote01[0]?.temperatura_max;
 
       // armazena os valores dos sensores nos arrays correspondentes
       valorestemperaturaAnalog.push({
