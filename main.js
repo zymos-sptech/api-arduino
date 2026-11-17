@@ -15,7 +15,7 @@ const serial = async (valorestemperaturaAnalog) => {
   // conexão com o banco de dados MySQL
   const poolBancoDados = mysql
     .createPool({
-      host: "localhost",
+      host: "INSIRA_O_IP_AQUI",
       user: "user_insert_zymos",
       password: "Zymos123!",
       database: "zymos",
@@ -72,8 +72,8 @@ const serial = async (valorestemperaturaAnalog) => {
       tempLote01 = tempConvertida;
 
       const getFaixaIdealLote01 = await getFaixaIdeal(idLote01);
-      const tempMinLote01 = getFaixaIdealLote01[0]?.temperatura_min;
-      const tempMaxLote01 = getFaixaIdealLote01[0]?.temperatura_max;
+      const tempMinLote01 = getFaixaIdealLote01[0]?.temperatura_min || 18;
+      const tempMaxLote01 = getFaixaIdealLote01[0]?.temperatura_max || 23;
 
       // armazena os valores dos sensores nos arrays correspondentes
       valorestemperaturaAnalog.push({
@@ -108,7 +108,10 @@ const serial = async (valorestemperaturaAnalog) => {
 
   async function getFaixaIdeal(id_lote) {
     const [response] = await poolBancoDados.execute(
-      "SELECT c.temperatura_min, c.temperatura_max FROM lote l JOIN cerveja c ON l.fk_cerveja = c.id_cerveja WHERE id_lote = ?",
+      `SELECT c.temperatura_min, c.temperatura_max 
+        FROM lote l 
+        JOIN cerveja c ON l.fk_cerveja = c.id 
+        WHERE l.id = ?`,
       [id_lote],
     );
     return response;
